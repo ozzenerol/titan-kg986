@@ -1,6 +1,6 @@
 [package]
 name = "titan-kg986"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2024"
 description = "Unofficial lighting control for the MARVO Titan KG986 keyboard on Linux"
 license = "MIT"

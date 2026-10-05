@@ -4,6 +4,17 @@ I bought a MARVO Titan 98 (KG986), plugged the 2.4 GHz dongle into my Debian lap
 
 ![screenshot](assets/screenshot.png)
 
+Here it is running on my desk:
+
+![my desk](assets/photos/desk.jpg)
+
+<p>
+  <img src="assets/photos/closeup.jpg" alt="keyboard lit by the app" width="49%">
+  <img src="assets/photos/label.jpg" alt="KG986W label" width="49%">
+</p>
+
+Mine is the KG986W, the wireless one.
+
 It lets you pick an effect, set brightness and speed, switch between the effect's own colours and a single colour of your choice, and put back the settings the keyboard had before you touched anything.
 
 This is not official software. It is not made, affiliated with or endorsed by MARVO.

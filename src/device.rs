@@ -8,6 +8,7 @@ use std::time::{Duration, Instant};
 
 const VID: u32 = 0x3554;
 const PID: u32 = 0xFA09;
+pub const NO_ANSWER: &str = "Keyboard not answering. Charge it or press a key, then Reload.";
 
 pub fn find() -> Result<PathBuf, String> {
     let mut hits = Vec::new();
@@ -94,6 +95,9 @@ impl Device {
                     }
                 }
             }
+        }
+        if got.is_empty() {
+            return Err(NO_ANSWER.into());
         }
         Config::from_frames(&got)
     }

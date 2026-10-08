@@ -15,6 +15,7 @@ pub mod theme {
     pub const ACCENT: Color32 = Color32::from_rgb(0x8b, 0x7c, 0xff);
     pub const ACCENT_HI: Color32 = Color32::from_rgb(0xa8, 0x9c, 0xff);
     pub const OK: Color32 = Color32::from_rgb(0x4a, 0xde, 0x80);
+    pub const WARN: Color32 = Color32::from_rgb(0xfb, 0xbf, 0x24);
     pub const BAD: Color32 = Color32::from_rgb(0xf8, 0x71, 0x71);
 }
 

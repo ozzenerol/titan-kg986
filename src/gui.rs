@@ -112,6 +112,7 @@ struct App {
     connected: bool,
     status: String,
     error: bool,
+    warning: bool,
     lighting: Lighting,
     hsv: [f32; 3],
     mode: usize,
@@ -134,6 +135,7 @@ impl App {
             connected: false,
             status: "Looking for the receiver".into(),
             error: false,
+            warning: false,
             lighting: Lighting { effect: 1, brightness: MAX_BRIGHTNESS, speed: 2, colorful: true },
             hsv: load_color(),
             mode: 0,
@@ -146,6 +148,7 @@ impl App {
         if self.jobs.send(job).is_ok() {
             self.busy = true;
             self.error = false;
+            self.warning = false;
             self.status = status.into();
         }
     }
@@ -166,11 +169,13 @@ impl App {
                     self.dirty = false;
                     self.status = msg;
                     self.error = false;
+                    self.warning = false;
                 }
                 Reply::Error(e) => {
                     self.connected = !e.contains("not found");
+                    self.warning = e == crate::device::NO_ANSWER;
+                    self.error = !self.warning;
                     self.status = e;
-                    self.error = true;
                 }
             }
         }
@@ -198,6 +203,8 @@ impl App {
             ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
                 let (text, color) = if self.busy && !self.connected {
                     ("Searching", theme::MUTED)
+                } else if self.warning {
+                    ("Keyboard asleep", theme::WARN)
                 } else if self.connected {
                     ("Connected", theme::OK)
                 } else {
@@ -265,14 +272,27 @@ impl App {
             if self.busy {
                 ui.add(egui::Spinner::new().size(14.0).color(theme::ACCENT));
             }
-            let color = if self.error {
+            if self.warning && !self.busy {
+                let (r, _) = ui.allocate_exact_size(Vec2::splat(16.0), egui::Sense::hover());
+                let c = r.center();
+                ui.painter().add(egui::Shape::convex_polygon(
+                    vec![c + Vec2::new(0.0, -7.0), c + Vec2::new(8.0, 7.0), c + Vec2::new(-8.0, 7.0)],
+                    theme::WARN,
+                    egui::Stroke::NONE,
+                ));
+                ui.painter().line_segment([c + Vec2::new(0.0, -2.5), c + Vec2::new(0.0, 2.5)], egui::Stroke::new(1.8, theme::BG));
+                ui.painter().circle_filled(c + Vec2::new(0.0, 5.0), 1.0, theme::BG);
+            }
+            let color = if self.warning {
+                theme::WARN
+            } else if self.error {
                 theme::BAD
             } else if self.dirty {
                 theme::ACCENT_HI
             } else {
                 theme::MUTED
             };
-            let text = if self.dirty && !self.busy && !self.error { "Unsaved changes" } else { &self.status };
+            let text = if self.dirty && !self.busy && !self.error && !self.warning { "Unsaved changes" } else { &self.status };
             ui.label(RichText::new(text).font(w::body(13.0)).color(color));
             ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
                 let ready = !self.busy && self.connected;
